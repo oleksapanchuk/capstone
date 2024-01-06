@@ -23,8 +23,7 @@ public class CapstoneApplication implements CommandLineRunner {
 		User admin = userRepository.findByRole(Role.ROLE_ADMIN);
 		if (admin == null) {
 			User user = new User();
-			user.setFirstName("Admin");
-			user.setLastName("Admin");
+			user.setName("Admin");
 			user.setEmail("admin@gmail.com");
 			user.setRole(Role.ROLE_ADMIN);
 			user.setPassword("admin");

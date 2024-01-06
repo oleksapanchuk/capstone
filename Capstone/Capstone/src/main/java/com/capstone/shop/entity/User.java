@@ -1,30 +1,52 @@
 package com.capstone.shop.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Data
+@SuperBuilder
+@Builder
 @Entity
 @RequiredArgsConstructor
 @Table(name = "user")
-public class User implements UserDetails {
+public class User implements UserDetails, OidcUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-    private String lastName;
+    private String name;
+    private String username;
     private String email;
     private String password;
-
+    private String imageUrl;
     private Role role;
+    private LoginProvider provider;
+    private Boolean isEmailVerified = false;
+    private Boolean isSubscribed = false;
+    private Boolean isLocked = true;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -33,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -43,7 +65,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isLocked;
     }
 
     @Override
@@ -55,4 +77,20 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return null;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return null;
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return null;
+    }
+
 }
