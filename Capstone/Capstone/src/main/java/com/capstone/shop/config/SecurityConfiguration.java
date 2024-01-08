@@ -1,5 +1,6 @@
 package com.capstone.shop.config;
 
+import com.capstone.shop.entity.Role;
 import com.capstone.shop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,23 +37,24 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-//                        .requestMatchers("/api/v1/auth/**").permitAll()
-//                        .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ROLE_ADMIN.name())
-//                        .requestMatchers("/api/v1/manager").hasAnyAuthority(Role.ROLE_MANAGER.name())
-//                        .requestMatchers("/api/v1/user").hasAnyAuthority(Role.ROLE_USER.name())
-                                .anyRequest().authenticated()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ROLE_ADMIN.name())
+                        .requestMatchers("/api/v1/manager").hasAnyAuthority(Role.ROLE_MANAGER.name())
+                        .requestMatchers("/api/v1/user").hasAnyAuthority(Role.ROLE_USER.name())
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(jwtAuthenticationProvider())
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
-                .formLogin(withDefaults())
-                .oauth2Login(oc -> oc.userInfoEndpoint(ui -> ui
-                        .userService(userService.oauth2LoginHandler())
-                        .oidcUserService(userService.oidcLoginHandler())))
+                .authenticationProvider(jwtAuthenticationProvider())
+//                .formLogin(withDefaults())
+//                .oauth2Login(oc -> oc.userInfoEndpoint(ui -> ui
+//                        .userService(userService.oauth2LoginHandler())
+//                        .oidcUserService(userService.oidcLoginHandler())))
+
         ;
 
         return http.build();

@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
@@ -31,6 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
+
+//        // Додайте умову перевірки, чи це запит від OAuth 2.0
+//        if (isOAuth2Request(request)) {
+//            // Ігноруємо OAuth 2.0 запит
+//            log.info("OAuth 2.0 request");
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
         if (StringUtils.isEmpty(authHeader) || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -56,5 +66,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isOAuth2Request(HttpServletRequest request) {
+        // Додайте логіку для перевірки, чи це запит від OAuth 2.0
+        // Наприклад, перевірте наявність певного параметра чи хедера,
+        // який характерний для OAuth 2.0.
+        // Приклад: якщо ваш OAuth 2.0 використовує "/oauth2" в шляхах,
+        // ви можете перевірити, чи шлях починається із "/oauth2".
+        return request.getServletPath().contains("/oauth2");
     }
 }

@@ -36,7 +36,6 @@ public class User implements UserDetails, OidcUser {
     private LoginProvider provider;
     private Boolean isEmailVerified = false;
     private Boolean isSubscribed = false;
-    private Boolean isLocked = true;
 
     @Override
     public String getName() {
@@ -65,7 +64,7 @@ public class User implements UserDetails, OidcUser {
 
     @Override
     public boolean isAccountNonLocked() {
-        return isLocked;
+        return false;
     }
 
     @Override
